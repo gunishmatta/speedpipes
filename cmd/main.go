@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 
+	"github.com/gunishmatta/speedpipes/internal/offset"
 	"github.com/gunishmatta/speedpipes/internal/runtime"
 	"github.com/gunishmatta/speedpipes/internal/source"
 )
@@ -15,7 +16,8 @@ func main() {
 		{ID: 3, Value: []byte("Event 3")},
 	}
 	source := source.NewMemorySource(events)
-	runtime := runtime.New(source)
+	offsetStore := offset.NewFileStore("offset.txt")
+	runtime := runtime.New(source, *offsetStore)
 	ctx := context.Background()
 	if err := runtime.Run(ctx); err != nil {
 		log.Fatalf("Error running runtime: %v", err)
